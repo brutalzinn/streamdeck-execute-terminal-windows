@@ -6,7 +6,9 @@ using streamdeck_client_csharp;
 using streamdeck_client_csharp.Events;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -94,21 +96,29 @@ namespace TestPlugin
             {
                 switch (args.Event.Action)
                 {
-                    case "com.tyren.testplugin.counter":
-                        lock (counters)
-                        {
-                            counters[args.Event.Context] = 0;
-                        }
-                        break;
-                    case "com.tyren.testplugin.changeimage":
-                        lock (images)
-                        {
-                            images.Add(args.Event.Context);
-                        }
-                        break;
+                    //case "com.tyren.testplugin.counter":
+                    //    lock (counters)
+                    //    {
+                    //        counters[args.Event.Context] = 0;
+                    //    }
+                    //    break;
+                    //case "com.tyren.testplugin.changeimage":
+                    //    lock (images)
+                    //    {
+                    //        images.Add(args.Event.Context);
+                    //    }
+                    //    break;
+
+                        //case "com.tyren.testplugin.pidemo":
+                        //    lock (settings)
+                        //    {
+                        //        settings[args.Event.Context] = args.Event.Payload.Settings;
+                        //        settings[args.Event.Context]["selectedValue"] = JValue.CreateString("0");
+                        //        settings[args.Event.Context]["textDemoValue"] = JValue.CreateString("");
+                        //    }
+                        //    break;
                 }
             };
-
             connection.OnDidReceiveSettings += (sender, args) =>
             {
                 switch (args.Event.Action)
@@ -123,35 +133,38 @@ namespace TestPlugin
                             }
                             if (settings[args.Event.Context]["selectedValue"] == null)
                             {
-                                settings[args.Event.Context]["selectedValue"] = JValue.CreateString("20");
+                                settings[args.Event.Context]["selectedValue"] = JValue.CreateString("0");
                             }
                             if (settings[args.Event.Context]["textDemoValue"] == null)
                             {
                                 settings[args.Event.Context]["textDemoValue"] = JValue.CreateString("");
                             }
                         }
+
                         break;
+
+
                 }
 
             };
-
-            connection.OnWillDisappear += (sender, args) =>
+    
+             connection.OnWillDisappear += (sender, args) =>
             {
-                lock (counters)
-                {
-                    if (counters.ContainsKey(args.Event.Context))
-                    {
-                        counters.Remove(args.Event.Context);
-                    }
-                }
+                //lock (counters)
+                //{
+                //    if (counters.ContainsKey(args.Event.Context))
+                //    {
+                //        counters.Remove(args.Event.Context);
+                //    }
+                //}
 
-                lock (images)
-                {
-                    if (images.Contains(args.Event.Context))
-                    {
-                        images.Remove(args.Event.Context);
-                    }
-                }
+                //lock (images)
+                //{
+                //    if (images.Contains(args.Event.Context))
+                //    {
+                //        images.Remove(args.Event.Context);
+                //    }
+                //}
 
                 lock (settings)
                 {
@@ -161,6 +174,33 @@ namespace TestPlugin
                     }
                 }
             };
+
+            connection.OnKeyDown += (sender, args) =>
+            {
+                settings[args.Event.Context] = args.Event.Payload.Settings;
+                if (settings[args.Event.Context]["textDemoValue"] != null && settings[args.Event.Context]["selectedValue"] != null)
+                {
+                    var cmd_args = settings[args.Event.Context].GetValue("textDemoValue").Value<string>();
+                    var selectedValue = settings[args.Event.Context].GetValue("selectedValue").Value<string>();
+
+                    var cmd_directory = ExplorerWatcher.GetActiveExplorerPath();
+
+                    var isLog = selectedValue == "1" ? true : false;
+
+                    var log = ExplorerWatcher.RunCommand(cmd_directory, cmd_args, true);
+
+                    if (isLog)
+                    {
+                        using (StreamWriter w = File.AppendText("log.txt"))
+                        {
+                            w.WriteLine(log);
+                        }
+                    }
+
+                   
+                }
+            };
+
 
             // Start the connection
             connection.Run();
@@ -175,24 +215,35 @@ namespace TestPlugin
                 // We connected, loop every second until we disconnect
                 while (!disconnectEvent.WaitOne(TimeSpan.FromMilliseconds(1000)))
                 {
-                    lock (counters)
+                    //lock (counters)
+                    //{
+                    //    foreach (KeyValuePair<string, int> kvp in counters.ToArray())
+                    //    {
+                    //        _ = connection.SetTitleAsync(kvp.Value.ToString(), kvp.Key, SDKTarget.HardwareAndSoftware, null);
+                    //        counters[kvp.Key]++;
+                    //    }
+                    //}
+
+                    //lock (images)
+                    //{
+                    //    foreach (string imageContext in images)
+                    //    {
+                    //        _ = connection.SetImageAsync(image, imageContext, SDKTarget.HardwareAndSoftware, null);
+                    //    }
+
+                    //    images.Clear();
+                    //}
+
+                    lock (settings)
                     {
-                        foreach (KeyValuePair<string, int> kvp in counters.ToArray())
+                        foreach (var settingsContext in settings)
                         {
-                            _ = connection.SetTitleAsync(kvp.Value.ToString(), kvp.Key, SDKTarget.HardwareAndSoftware, null);
-                            counters[kvp.Key]++;
+                           //  _ = connection.SetTitleAsync(, settingsContext.Key, SDKTarget.HardwareAndSoftware, null);
+
                         }
+
                     }
 
-                    lock (images)
-                    {
-                        foreach (string imageContext in images)
-                        {
-                            _ = connection.SetImageAsync(image, imageContext, SDKTarget.HardwareAndSoftware, null);
-                        }
-
-                        images.Clear();
-                    }
                 }
             }
         }
