@@ -177,30 +177,42 @@ namespace TestPlugin
 
             connection.OnKeyDown += (sender, args) =>
             {
-                settings[args.Event.Context] = args.Event.Payload.Settings;
-                if (settings[args.Event.Context]["textDemoValue"] != null && settings[args.Event.Context]["selectedValue"] != null)
+                switch (args.Event.Action)
                 {
-                    var cmd_args = settings[args.Event.Context].GetValue("textDemoValue").Value<string>();
-                    var selectedValue = settings[args.Event.Context].GetValue("selectedValue").Value<string>();
-
-                    var cmd_directory = ExplorerWatcher.GetActiveExplorerPath();
-
-                    var isLog = selectedValue == "1" ? true : false;
-
-                    var log = ExplorerWatcher.RunCommand(cmd_directory, cmd_args, true);
-
-                    if (isLog)
-                    {
-                        using (StreamWriter w = File.AppendText("log.txt"))
+                    case "com.tyren.testplugin.pidemo":
+                        bool isLog = false;
+                        settings[args.Event.Context] = args.Event.Payload.Settings;
+                        if (settings[args.Event.Context]["textDemoValue"] != null && settings[args.Event.Context]["selectedValue"] != null)
                         {
-                            w.WriteLine(log);
-                        }
-                    }
+                            var cmd_args = settings[args.Event.Context].GetValue("textDemoValue").Value<string>();
+                            var selectedValue = settings[args.Event.Context].GetValue("selectedValue").Value<string>();
 
-                   
+                            var cmd_directory = ExplorerWatcher.GetActiveExplorerPath();
+
+                            WriteLog($"Executando: ${cmd_args}");
+                            WriteLog($"Em: ${cmd_directory}");
+
+                            isLog = selectedValue == "1" ? true : false;
+
+                            var log = ExplorerWatcher.RunCommand(cmd_directory, cmd_args, true);
+
+                            WriteLog(log);
+    
+                        }
+                        void WriteLog(string log)
+                        {
+                            if (isLog && !string.IsNullOrEmpty(log))
+                            {
+                                using (StreamWriter w = File.AppendText("log.txt"))
+                                {
+                                    w.WriteLine($"{DateTime.Now}-{log}");
+                                }
+                            }
+                        }
+                        break;
                 }
             };
-
+         
 
             // Start the connection
             connection.Run();

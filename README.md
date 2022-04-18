@@ -4,6 +4,12 @@
 
 This project added a button called C# Test Plugin that examines the current user's folder. If the current folder is focused, the user can click the button in the macro deck and execute any command hint in the specified directory.
 This means that you can execute commands of Docker, Git Bash and many others that needs be executed in current directory.
+
+Example 1:
+
+1. Create a button C# test plugin 
+2. Configure the command text input to  ```start "" "C:\Program Files\Git\bin\git.exe" ```
+3. Click on your new button in streamdeck and you will see a git bash opened to your current folder looking.
 ## License
 MIT License
 
