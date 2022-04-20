@@ -177,10 +177,10 @@ namespace TestPlugin
 
             connection.OnKeyDown += (sender, args) =>
             {
+                bool isLog = false;
                 switch (args.Event.Action)
                 {
                     case "com.tyren.testplugin.pidemo":
-                        bool isLog = false;
                         settings[args.Event.Context] = args.Event.Payload.Settings;
                         if (settings[args.Event.Context]["textDemoValue"] != null && settings[args.Event.Context]["selectedValue"] != null)
                         {
@@ -199,17 +199,32 @@ namespace TestPlugin
                             WriteLog(log);
     
                         }
-                        void WriteLog(string log)
-                        {
-                            if (isLog && !string.IsNullOrEmpty(log))
-                            {
-                                using (StreamWriter w = File.AppendText("log.txt"))
-                                {
-                                    w.WriteLine($"{DateTime.Now}-{log}");
-                                }
-                            }
-                        }
                         break;
+
+                    case "com.tyren.testplugin.arduino":
+                        
+                        settings[args.Event.Context] = args.Event.Payload.Settings;
+                        if (settings[args.Event.Context]["selectedColor"] != null && settings[args.Event.Context]["textDemoValue"] != null)
+                        {
+                            var color = settings[args.Event.Context].GetValue("selectedColor").Value<string>();
+                            isLog = settings[args.Event.Context].GetValue("selectedValue").Value<string>() == "1";
+
+                            WriteLog($"Mudando cor para: ${color}");
+
+
+                        }     
+                        break;
+                }
+
+                void WriteLog(string log)
+                {
+                    if (isLog && !string.IsNullOrEmpty(log))
+                    {
+                        using (StreamWriter w = File.AppendText("log.txt"))
+                        {
+                            w.WriteLine($"{DateTime.Now}-{log}");
+                        }
+                    }
                 }
             };
          

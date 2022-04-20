@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>Tyren's Test Plugin - Property Inspector Demo</title>
+    <link rel="stylesheet" href="../sdpi.css">
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Log command</div>
+            <select class="sdpi-item-value select" id="select_single" oninput="updateSettings()" disabled>
+                <option value="0">Disabled</option>
+                <option value="1">Enabled</option>
+            </select>
+
+        </div>
+    </div>
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Arduino color</div>
+        <input type="color" id="color_picker" oninput="updateSettings()" disabled>
+    </div>
+
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">URL</div>
+        <input class="sdpi-item-value" id="text_demo" value="" placeholder="http://esp8266/api" oninput="updateSettings()" disabled>
+    </div>
+
+    <script src="Index.js"></script>
+</body>
+</html>

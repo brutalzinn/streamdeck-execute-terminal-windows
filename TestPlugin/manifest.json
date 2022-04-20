@@ -2,7 +2,22 @@
   "Actions": [
     {
       "Icon": "Images/icon",
-      "Name": "Command executor in current explorer folder opened",
+      "Name": "Arduino Action",
+      "States": [
+        {
+          "Image": "Images/action1",
+          "TitleAlignment": "middle",
+          "FontSize": "17"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "This demonstrates saving and using settings",
+      "UUID": "com.tyren.testplugin.arduino",
+      "PropertyInspectorPath": "PropertyInspector/ArduinoDemo/Index.html"
+    },
+    {
+      "Icon": "Images/icon",
+      "Name": "Command executor",
       "States": [
         {
           "Image": "Images/action1",
