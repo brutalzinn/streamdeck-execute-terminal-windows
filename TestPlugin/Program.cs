@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace TestPlugin
             [Option("info", Required = true, HelpText = "Extra JSON launch data")]
             public string Info { get; set; }
         }
+        private static readonly ArduinoRequest ArduinoRequest = new ArduinoRequest();
 
         // StreamDeck launches the plugin with these details
         // -port [number] -pluginUUID [GUID] -registerEvent [string?] -info [json]
@@ -201,18 +203,29 @@ namespace TestPlugin
                         }
                         break;
 
-                    case "com.tyren.testplugin.arduino":
+                        case "com.tyren.testplugin.arduino":
                         
-                        settings[args.Event.Context] = args.Event.Payload.Settings;
-                        if (settings[args.Event.Context]["selectedColor"] != null && settings[args.Event.Context]["textDemoValue"] != null)
+                            settings[args.Event.Context] = args.Event.Payload.Settings;
+                        try
                         {
-                            var color = settings[args.Event.Context].GetValue("selectedColor").Value<string>();
+
+                            if (settings[args.Event.Context]["textDemoValue"] != null)
+                            {
+
+                            string url = settings[args.Event.Context].GetValue("textDemoValue").Value<string>() ?? "";           
                             isLog = settings[args.Event.Context].GetValue("selectedValue").Value<string>() == "1";
+                            var colorHSL = settings[args.Event.Context].GetValue("selectedColor").ToObject<ColorPicker>();
+    
+                            ArduinoRequest.TurnOn(url, colorHSL);
+                            }
 
-                            WriteLog($"Mudando cor para: ${color}");
+                        }catch(Exception ex)
+                        {
+                            WriteLog(ex.StackTrace);
+                        }
+                        //WriteLog($"Mudando cor para: ${isRequestOk} ${url} ${colorHSL.hue} ${colorHSL.saturation}");
 
 
-                        }     
                         break;
                 }
 

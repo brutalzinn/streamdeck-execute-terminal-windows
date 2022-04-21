@@ -38,15 +38,92 @@ function connectElgatoStreamDeckSocket(inPort, inUUID, inRegisterEvent, inInfo, 
         }
     };
 }
+function hexToHSL(H) {
+    //20042022.15.08
+    //https://css-tricks.com/converting-color-spaces-in-javascript/
+    let r = 0, g = 0, b = 0;
+
+    if (H.length == 4) {
+        r = "0x" + H[1] + H[1];
+        g = "0x" + H[2] + H[2];
+        b = "0x" + H[3] + H[3];
+    } else if (H.length == 7) {
+        r = "0x" + H[1] + H[2];
+        g = "0x" + H[3] + H[4];
+        b = "0x" + H[5] + H[6];
+    }
+    // Then to HSL
+    red = parseInt(r)
+    green = parseInt(g)
+    blue = parseInt(b)
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let cmin = Math.min(r, g, b),
+        cmax = Math.max(r, g, b),
+        delta = cmax - cmin,
+        h = 0,
+        s = 0,
+        l = 0;
+
+    if (delta == 0)
+        h = 0;
+    else if (cmax == r)
+        h = ((g - b) / delta) % 6;
+    else if (cmax == g)
+        h = (b - r) / delta + 2;
+    else
+        h = (r - g) / delta + 4;
+
+    h = Math.round(h * 60);
+
+    if (h < 0)
+        h += 360;
+
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+
+    return {
+        red,
+        green,
+        blue,
+        hue: h,
+        saturation: s,
+        lum: l
+    }
+}
+
+function RGBToHex(r, g, b) {
+    //20042022.15.08
+    r = r.toString(16);
+    g = g.toString(16);
+    b = b.toString(16);
+
+    if (r.length == 1)
+        r = "0" + r;
+    if (g.length == 1)
+        g = "0" + g;
+    if (b.length == 1)
+        b = "0" + b;
+
+    return "#" + r + g + b;
+}
+
+function loadColorPicker(data) {
+    if(data != null)
+    return RGBToHex(data.red, data.green, data.blue)
+}
 
 function refreshSettings(settings) {
     var select_single = document.getElementById('select_single');
-    var select_color = document.getElementById('color_picker');
+    var select_color = document.getElementById('select_color');
     var text_demo = document.getElementById('text_demo');
 
     if (settings) {
         select_single.value = settings.selectedValue;
-        select_color.value = settings.selectedColor;
+        select_color.value = loadColorPicker(settings.selectedColor);
         text_demo.value = settings.textDemoValue;
     }
 
@@ -58,14 +135,14 @@ function refreshSettings(settings) {
 function updateSettings() {
     var select_single = document.getElementById('select_single');
     var text_demo = document.getElementById('text_demo');
-    var select_single = document.getElementById('select_color');
+    var select_color = document.getElementById('select_color');
 
     var setSettings = {};
     setSettings.event = 'setSettings';
     setSettings.context = uuid;
     setSettings.payload = {};
     setSettings.payload.selectedValue = select_single.value;
-    setSettings.payload.selectedColor = select_color.value;
+    setSettings.payload.selectedColor = hexToHSL(select_color.value);
     setSettings.payload.textDemoValue = text_demo.value;
 
     websocket.send(JSON.stringify(setSettings));
