@@ -214,9 +214,9 @@ namespace TestPlugin
 
                             string url = settings[args.Event.Context].GetValue("textDemoValue").Value<string>() ?? "";           
                             isLog = settings[args.Event.Context].GetValue("selectedValue").Value<string>() == "1";
-                            var colorHSL = settings[args.Event.Context].GetValue("selectedColor").ToObject<ColorPicker>();
+                            var colorPicker = settings[args.Event.Context].GetValue("selectedColor").ToObject<ColorPicker>();
     
-                            ArduinoRequest.TurnOn(url, colorHSL);
+                            ArduinoRequest.TurnOn(url, colorPicker);
                             }
 
                         }catch(Exception ex)

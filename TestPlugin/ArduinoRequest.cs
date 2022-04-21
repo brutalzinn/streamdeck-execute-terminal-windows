@@ -9,9 +9,7 @@ namespace TestPlugin
     public class ArduinoRequest
     {
 
-        public bool TurnOn(string url, ColorPicker color) => CallAPI(url, $"{{ \"on\": true, \"hue\" : {color.hue}, \"sat\": {color.saturation} }}") == HttpStatusCode.OK;
-
-        public bool TurnOff(string url) => CallAPI(url,"{ \"on\": false }") == HttpStatusCode.OK;
+        public bool TurnOn(string url, ColorPicker color) => CallAPI(url, $"{{ \"red\" : {color.red}, \"green\": {color.green}, \"blue\": {color.blue} }}") == HttpStatusCode.OK;
         
         private  HttpClient _client { get; set; }
             
