@@ -34,13 +34,17 @@ namespace TestPlugin
             public string Info { get; set; }
         }
         private static readonly ArduinoRequest ArduinoRequest = new ArduinoRequest();
-
+        public enum ToggleButton
+        {
+            ON,
+            OFF
+        }
         // StreamDeck launches the plugin with these details
         // -port [number] -pluginUUID [GUID] -registerEvent [string?] -info [json]
         static void Main(string[] args)
         {
             // Uncomment this line of code to allow for debugging
-            // while (!System.Diagnostics.Debugger.IsAttached) { System.Threading.Thread.Sleep(100); }
+            //while (!System.Diagnostics.Debugger.IsAttached) { System.Threading.Thread.Sleep(100); }
 
             // The command line args parser expects all args to use `--`, so, let's append
             for (int count = 0; count < args.Length; count++)
@@ -184,6 +188,7 @@ namespace TestPlugin
                 {
                     case "com.tyren.testplugin.pidemo":
                         settings[args.Event.Context] = args.Event.Payload.Settings;
+                       
                         if (settings[args.Event.Context]["textDemoValue"] != null && settings[args.Event.Context]["selectedValue"] != null)
                         {
                             var cmd_args = settings[args.Event.Context].GetValue("textDemoValue").Value<string>();
@@ -219,14 +224,54 @@ namespace TestPlugin
                             ArduinoRequest.TurnOn(url, colorPicker);
                             }
 
-                        }catch(Exception ex)
+                        }
+                        catch(Exception ex)
                         {
                             WriteLog(ex.StackTrace);
                         }
-                        //WriteLog($"Mudando cor para: ${isRequestOk} ${url} ${colorHSL.hue} ${colorHSL.saturation}");
+                        break;
 
+                    case "com.tyren.testplugin.mqttdemo":
+                    settings[args.Event.Context] = args.Event.Payload.Settings;
+
+                    try
+                    {
+                        
+                        var selectedValue = settings[args.Event.Context].GetValue("selectedValue").Value<string>();
+                        isLog = selectedValue == "1" ? true : false;
+
+                        string hostname = settings[args.Event.Context].GetValue("hostname").Value<string>() ?? "";
+                        string username = settings[args.Event.Context].GetValue("username").Value<string>() ?? "";
+                        string password = settings[args.Event.Context].GetValue("password").Value<string>() ?? "";
+                        string error_topic = settings[args.Event.Context].GetValue("error_topic").Value<string>() ?? "";
+                        string id_user = settings[args.Event.Context].GetValue("mqtt_id").Value<string>() ?? "";
+                        string port = settings[args.Event.Context].GetValue("port").Value<string>() ?? "";
+
+                        string topic_on = settings[args.Event.Context].GetValue("topic_on").Value<string>() ?? "";
+                        string topic_off = settings[args.Event.Context].GetValue("topic_off").Value<string>() ?? "";
+
+                        string payload_on = settings[args.Event.Context].GetValue("payload_on").Value<string>() ?? "";
+                        string payload_off = settings[args.Event.Context].GetValue("payload_off").Value<string>() ?? "";
+                        
+                        MQTT mqtt_connector = new MQTT(hostname, username, password, error_topic, id_user);
+                        var button = (ToggleButton)args.Event.Payload.State;
+
+                        if (button == ToggleButton.ON)
+                        {
+                            mqtt_connector.SendMessage(topic_on, payload_on);
+                            break;
+                        }
+                       
+                         mqtt_connector.SendMessage(topic_off, payload_off);
+                        
+                        }
+                        catch (Exception ex)
+                        {
+                            WriteLog(ex.StackTrace);
+                        }
 
                         break;
+                      
                 }
 
                 void WriteLog(string log)

@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>Tyren's Test Plugin - Property Inspector Demo</title>
+    <link rel="stylesheet" href="../sdpi.css">
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+            <div class="sdpi-item-label">Log command</div>
+            <select class="sdpi-item-value select" id="select_single" oninput="updateSettings()" disabled>
+                <option value="0">Disabled</option>
+                <option value="1">Enabled</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Host Demo</div>
+        <input class="sdpi-item-value" id="text_host" value="" placeholder="Host" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Username Demo</div>
+        <input class="sdpi-item-value" id="text_username" value="" placeholder="Username" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Password Demo</div>
+        <input class="sdpi-item-value" id="text_password" value="" placeholder="Password" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Port Demo</div>
+        <input class="sdpi-item-value" id="text_port" value="" placeholder="Password" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Id Demo</div>
+        <input class="sdpi-item-value" id="text_id" value="" placeholder="Id" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Topic on Demo</div>
+        <input class="sdpi-item-value" id="text_topic_on" value="" placeholder="Topic On" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Payload On</div>
+        <input class="sdpi-item-value" id="text_payload_on" value="" placeholder="Payload On" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Topic off Demo</div>
+        <input class="sdpi-item-value" id="text_topic_off" value="" placeholder="Topic off" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Payload Off</div>
+        <input class="sdpi-item-value" id="text_payload_off" value="" placeholder="Payload Off" oninput="updateSettings()" disabled>
+    </div>
+
+    <div class="sdpi-item">
+        <div class="sdpi-item-label">Topic Error Demo</div>
+        <input class="sdpi-item-value" id="text_error_topic" value="" placeholder="Error Topic" oninput="updateSettings()" disabled>
+    </div>
+
+    <script src="Index.js"></script>
+</body>
+</html>
