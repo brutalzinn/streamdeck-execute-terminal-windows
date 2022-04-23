@@ -180,6 +180,11 @@ namespace TestPlugin
                     }
                 }
             };
+            //  TODO:
+            // Implementar uma forma pra tratar melhor essas ações
+            // Program.cs já tem muita responsabilidade. Apesar de ser para fins de teste
+            // É difícil corrigir ou efetuar implementações novas com maiores complexidades dessa forma.
+            // Program.cs só deveria ser responsável por iniciar o plugin e criar as instÂncias necessárias. Nada mais que isso.
 
             connection.OnKeyDown += (sender, args) =>
             {
@@ -239,7 +244,6 @@ namespace TestPlugin
                         
                         var selectedValue = settings[args.Event.Context].GetValue("selectedValue").Value<string>();
                         isLog = selectedValue == "1" ? true : false;
-
                         string hostname = settings[args.Event.Context].GetValue("hostname").Value<string>() ?? "";
                         string username = settings[args.Event.Context].GetValue("username").Value<string>() ?? "";
                         string password = settings[args.Event.Context].GetValue("password").Value<string>() ?? "";

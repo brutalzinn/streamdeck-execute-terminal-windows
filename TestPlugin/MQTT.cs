@@ -19,9 +19,13 @@ namespace TestPlugin
         {
             mqttClient = new MqttClient(host);
             mqttClient.MqttMsgPublishReceived += MqttClient_MqttMsgPublishReceived;
+            mqttClient.MqttMsgPublished += Disconnect;
             mqttClient.Subscribe(new string[] { error_topic }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
             mqttClient.Connect(id, username, password);
         }
+
+     
+
         private void MqttClient_MqttMsgPublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
         {
             var message = Encoding.UTF8.GetString(e.Message);
@@ -40,10 +44,10 @@ namespace TestPlugin
                     mqttClient.Publish(topic, Encoding.UTF8.GetBytes(message));
                 }
             });
-            // Disconnect();
+            
         }
 
-        private void Disconnect()
+        private void Disconnect(object sender, MqttMsgPublishedEventArgs e)
         {
             mqttClient.Disconnect();
         }
